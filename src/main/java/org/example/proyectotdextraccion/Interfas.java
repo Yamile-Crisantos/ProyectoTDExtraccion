@@ -244,64 +244,76 @@ public class Interfas extends Application {
 
         TabPane tabs = new TabPane();
 
-        // VUELOS
+        // ================= VUELOS =================
         TableView<Vuelo> tv = new TableView<>();
         configurarTablaVuelos(tv);
 
         Button b1 = new Button("Transformar Vuelos");
         b1.setOnAction(e ->
-                servicio.obtenerVuelosOpenSky().thenAccept(lista ->
-                        Platform.runLater(() ->
-                                tv.setItems(FXCollections.observableArrayList(
-                                        servicio.transformarVuelos(lista)
-                                ))
-                        )
-                )
+                servicio.obtenerVuelosOpenSky().thenAccept(lista -> {
+
+                    var transformados = servicio.transformarVuelos(lista);
+
+                    servicio.guardarVuelosMongo(transformados); // 🔥 GUARDA EN MONGO
+
+                    Platform.runLater(() ->
+                            tv.setItems(FXCollections.observableArrayList(transformados))
+                    );
+                })
         );
 
-        // CLIMA
+        // ================= CLIMA =================
         TableView<ClimaEstado> tc = new TableView<>();
         configurarTablaClima(tc);
 
         Button b2 = new Button("Transformar Clima");
         b2.setOnAction(e ->
-                servicio.obtenerClimaEstados().thenAccept(lista ->
-                        Platform.runLater(() ->
-                                tc.setItems(FXCollections.observableArrayList(
-                                        servicio.transformarClima(lista)
-                                ))
-                        )
-                )
+                servicio.obtenerClimaEstados().thenAccept(lista -> {
+
+                    var transformados = servicio.transformarClima(lista);
+
+                    servicio.guardarClimaMongo(transformados); // 🔥
+
+                    Platform.runLater(() ->
+                            tc.setItems(FXCollections.observableArrayList(transformados))
+                    );
+                })
         );
 
-        // AEROPUERTOS
+        // ================= AEROPUERTOS =================
         TableView<Aeropuerto> ta = new TableView<>();
         configurarTablaAeropuertos(ta);
 
         Button b3 = new Button("Transformar Aeropuertos");
         b3.setOnAction(e ->
-                servicio.obtenerAeropuertosAFAC().thenAccept(lista ->
-                        Platform.runLater(() ->
-                                ta.setItems(FXCollections.observableArrayList(
-                                        servicio.transformarAeropuertos(lista)
-                                ))
-                        )
-                )
+                servicio.obtenerAeropuertosAFAC().thenAccept(lista -> {
+
+                    var transformados = servicio.transformarAeropuertos(lista);
+
+                    servicio.guardarAeropuertosMongo(transformados); // 🔥
+
+                    Platform.runLater(() ->
+                            ta.setItems(FXCollections.observableArrayList(transformados))
+                    );
+                })
         );
 
-        // AERONAVES
+        // ================= AERONAVES =================
         TableView<Aeronave> tn = new TableView<>();
         configurarTablaAeronaves(tn);
 
         Button b4 = new Button("Transformar Aeronaves");
         b4.setOnAction(e ->
-                servicio.obtenerBaseAeronaves().thenAccept(lista ->
-                        Platform.runLater(() ->
-                                tn.setItems(FXCollections.observableArrayList(
-                                        servicio.transformarAeronaves(lista)
-                                ))
-                        )
-                )
+                servicio.obtenerBaseAeronaves().thenAccept(lista -> {
+
+                    var transformados = servicio.transformarAeronaves(lista);
+
+                    servicio.guardarAeronavesMongo(transformados); // 🔥
+
+                    Platform.runLater(() ->
+                            tn.setItems(FXCollections.observableArrayList(transformados))
+                    );
+                })
         );
 
         tabs.getTabs().addAll(

@@ -12,19 +12,16 @@ public class Vuelo {
     private DoubleProperty altitud;
     private DoubleProperty velocidad;
 
-    // NUEVOS CAMPOS ETL
     private StringProperty tipoVuelo;
     private StringProperty aerolinea;
     private StringProperty nivel;
     private StringProperty categoriaVelocidad;
     private StringProperty origen;
 
-    // CONSTRUCTOR NORMAL
     public Vuelo(String icao24, String callsign, double lon, double lat, double alt, double vel) {
         this(icao24, callsign, lon, lat, alt, vel, "", "", "", "", "");
     }
 
-    // CONSTRUCTOR ETL
     public Vuelo(String icao24, String callsign,
                  double lon, double lat, double alt, double vel,
                  String tipoVuelo, String aerolinea,

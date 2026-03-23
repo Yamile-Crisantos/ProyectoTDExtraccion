@@ -11,6 +11,8 @@ import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 
 public class ServicioConexion {
 
@@ -319,5 +321,66 @@ public class ServicioConexion {
             );
 
         }).toList();
+    }
+
+    public void guardarVuelosMongo(List<Vuelo> lista) {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+        col.drop();
+
+        for (Vuelo v : lista) {
+            col.insertOne(new Document()
+                    .append("icao24", v.icao24Property().get())
+                    .append("callsign", v.callsignProperty().get())
+                    .append("tipoVuelo", v.tipoVueloProperty().get())
+                    .append("aerolinea", v.aerolineaProperty().get())
+                    .append("nivel", v.nivelProperty().get())
+                    .append("velocidad", v.velocidadProperty().get())
+                    .append("categoriaVelocidad", v.categoriaVelocidadProperty().get())
+                    .append("origen", v.origenProperty().get()));
+        }
+    }
+
+    public void guardarClimaMongo(List<ClimaEstado> lista) {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("clima");
+        col.drop();
+
+        for (ClimaEstado c : lista) {
+            col.insertOne(new Document()
+                    .append("estado", c.estadoProperty().get())
+                    .append("temperatura", c.temperaturaProperty().get())
+                    .append("tipoClima", c.tipoClimaProperty().get())
+                    .append("humedad", c.humedadProperty().get())
+                    .append("nivelHumedad", c.nivelHumedadProperty().get()));
+        }
+    }
+
+    public void guardarAeropuertosMongo(List<Aeropuerto> lista) {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("aeropuertos");
+        col.drop();
+
+        for (Aeropuerto a : lista) {
+            col.insertOne(new Document()
+                    .append("nombre", a.nombreProperty().get())
+                    .append("ciudad", a.ciudadProperty().get())
+                    .append("icao", a.icaoProperty().get())
+                    .append("tipo", a.tipoProperty().get()));
+        }
+    }
+
+    public void guardarAeronavesMongo(List<Aeronave> lista) {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("aeronaves");
+        col.drop();
+
+        for (Aeronave a : lista) {
+            col.insertOne(new Document()
+                    .append("icao", a.icaoProperty().get())
+                    .append("estado", a.estadoProperty().get())
+                    .append("operador", a.operadorProperty().get())
+                    .append("tipoOperacion", a.tipoOperacionProperty().get()));
+        }
     }
 }

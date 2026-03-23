@@ -8,7 +8,6 @@ public class ClimaEstado {
     private DoubleProperty temperatura;
     private IntegerProperty humedad;
 
-    // NUEVOS CAMPOS
     private StringProperty tipoClima;
     private StringProperty nivelHumedad;
 

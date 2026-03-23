@@ -7,8 +7,6 @@ public class Aeronave {
     private StringProperty icao;
     private StringProperty estado;
     private StringProperty operador;
-
-    // NUEVO
     private StringProperty tipoOperacion;
 
     public Aeronave(String icao, String estado, String operador) {

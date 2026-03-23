@@ -7,8 +7,6 @@ public class Aeropuerto {
     private StringProperty nombre;
     private StringProperty ciudad;
     private StringProperty icao;
-
-    // NUEVO
     private StringProperty tipo;
 
     public Aeropuerto(String nombre, String ciudad, String icao) {
