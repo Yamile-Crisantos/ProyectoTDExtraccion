@@ -212,7 +212,7 @@ public class ServicioConexion {
                         .map(v -> new Aeronave(
                                 v.icao24Property().get(),
                                 "Vuelo Activo",
-                                v.paisProperty().get()
+                                v.callsignProperty().get()
                         ))
                         .collect(Collectors.toList())
         );
@@ -224,94 +224,46 @@ public class ServicioConexion {
 
         return lista.stream().map(v -> {
 
-            String callsign = v.paisProperty().get().trim().toUpperCase();
+            String callsign = v.callsignProperty().get().trim().toUpperCase();
 
-            // -------- TIPO DE VUELO --------
-
-            String tipoVuelo;
-
-            if (callsign.startsWith("XA") ||
-                    callsign.startsWith("XB") ||
-                    callsign.startsWith("XC")) {
-
-                tipoVuelo = "NACIONAL";
-
-            } else {
-
-                tipoVuelo = "INTERNACIONAL";
-            }
-
-            // -------- ALTURA --------
+            String tipoVuelo = (callsign.startsWith("XA") || callsign.startsWith("XB") || callsign.startsWith("XC"))
+                    ? "NACIONAL" : "INTERNACIONAL";
 
             double metros = Math.round(v.altitudProperty().get() * 0.3048);
 
-            String nivel;
-
-            if (metros < 3000) {
-                nivel = "BAJO";
-            }
-            else if (metros < 10000) {
-                nivel = "CRUCERO";
-            }
-            else {
-                nivel = "ALTO";
-            }
-
-            // -------- VELOCIDAD --------
+            String nivel = (metros < 3000) ? "BAJO" : (metros < 10000) ? "CRUCERO" : "ALTO";
 
             double vel = v.velocidadProperty().get();
-
-            String categoriaVel;
-
-            if (vel < 200) {
-                categoriaVel = "LENTO";
-            }
-            else if (vel < 250) {
-                categoriaVel = "COMERCIAL";
-            }
-            else {
-                categoriaVel = "ALTA VELOCIDAD";
-            }
-
-            // -------- AEROLINEA --------
+            String categoriaVel = (vel < 200) ? "LENTO" : (vel < 250) ? "COMERCIAL" : "ALTA";
 
             String aerolinea;
-
             if (callsign.startsWith("AMX")) aerolinea = "AEROMEXICO";
-            else if (callsign.startsWith("VIV")) aerolinea = "VIVA AEROBUS";
+            else if (callsign.startsWith("VIV")) aerolinea = "VIVA";
             else if (callsign.startsWith("VOI")) aerolinea = "VOLARIS";
-            else if (callsign.startsWith("DAL")) aerolinea = "DELTA";
-            else if (callsign.startsWith("UAL")) aerolinea = "UNITED";
             else aerolinea = "OTRA";
 
-            // -------- ORIGEN PROBABLE --------
-
-            String origen;
-
-            double lat = v.latitudProperty().get();
-
-            if (lat > 28) origen = "NORTE MX / USA";
-            else if (lat > 22) origen = "CENTRO MX";
-            else origen = "SUR MX / CENTROAMERICA";
+            String origen = (v.latitudProperty().get() > 28) ? "NORTE"
+                    : (v.latitudProperty().get() > 22) ? "CENTRO" : "SUR";
 
             return new Vuelo(
                     v.icao24Property().get(),
-                    callsign + " | " +
-                            tipoVuelo + " | " +
-                            aerolinea + " | " +
-                            nivel + " | " +
-                            categoriaVel + " | " +
-                            origen,
+                    callsign,
                     v.longitudProperty().get(),
                     v.latitudProperty().get(),
                     metros,
-                    vel
+                    vel,
+                    tipoVuelo,
+                    aerolinea,
+                    nivel,
+                    categoriaVel,
+                    origen
             );
 
         }).toList();
     }
 
     public List<ClimaEstado> transformarClima(List<ClimaEstado> lista) {
+
         return lista.stream().map(c -> {
 
             double t = c.temperaturaProperty().get();
@@ -321,8 +273,11 @@ public class ServicioConexion {
             String humedad = (h < 40) ? "BAJA" : (h <= 70) ? "MEDIA" : "ALTA";
 
             return new ClimaEstado(
-                    c.estadoProperty().get() + " (" + clima + "/" + humedad + ")",
-                    t, h
+                    c.estadoProperty().get(),
+                    t,
+                    h,
+                    clima,
+                    humedad
             );
 
         }).toList();
@@ -333,34 +288,36 @@ public class ServicioConexion {
         return lista.stream().map(a -> {
 
             String nombre = a.nombreProperty().get().toUpperCase();
-            String ciudad = a.ciudadProperty().get();
-            String icao = a.icaoProperty().get();
-
             String tipo;
 
-            if (nombre.contains("INTL") || nombre.contains("INTERNACIONAL")) {
-                tipo = "PUBLICO";
-            } else if (nombre.contains("HELIPUERTO") || nombre.contains("HELIPORT")) {
-                tipo = "HELIPUERTO";
-            } else {
-                tipo = "PRIVADO";
-            }
+            if (nombre.contains("INTL") || nombre.contains("INTERNACIONAL")) tipo = "PUBLICO";
+            else if (nombre.contains("HELIPUERTO")) tipo = "HELIPUERTO";
+            else tipo = "PRIVADO";
 
-            // mostramos el tipo dentro del campo ciudad
-            ciudad = ciudad + " (" + tipo + ")";
-
-            return new Aeropuerto(nombre, ciudad, icao);
+            return new Aeropuerto(
+                    nombre,
+                    a.ciudadProperty().get(),
+                    a.icaoProperty().get(),
+                    tipo
+            );
 
         }).toList();
     }
 
     public List<Aeronave> transformarAeronaves(List<Aeronave> lista) {
-        return lista.stream().map(a ->
-                new Aeronave(
-                        a.icaoProperty().get(),
-                        "ACTIVO EN VUELO",
-                        a.operadorProperty().get().toUpperCase()
-                )
-        ).toList();
+
+        return lista.stream().map(a -> {
+
+            String tipoOp = a.operadorProperty().get().startsWith("AMX")
+                    ? "COMERCIAL" : "GENERAL";
+
+            return new Aeronave(
+                    a.icaoProperty().get(),
+                    "ACTIVO",
+                    a.operadorProperty().get().toUpperCase(),
+                    tipoOp
+            );
+
+        }).toList();
     }
 }

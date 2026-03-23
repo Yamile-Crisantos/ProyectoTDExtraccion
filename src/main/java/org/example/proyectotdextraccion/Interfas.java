@@ -89,8 +89,8 @@ public class Interfas extends Application {
         TableColumn<Vuelo, String> c1 = new TableColumn<>("ICAO");
         c1.setCellValueFactory(d -> d.getValue().icao24Property());
 
-        TableColumn<Vuelo, String> c2 = new TableColumn<>("Vuelo");
-        c2.setCellValueFactory(d -> d.getValue().paisProperty());
+        TableColumn<Vuelo, String> c2 = new TableColumn<>("Callsign");
+        c2.setCellValueFactory(d -> d.getValue().callsignProperty());
 
         TableColumn<Vuelo, Number> c3 = new TableColumn<>("Longitud");
         c3.setCellValueFactory(d -> d.getValue().longitudProperty());
@@ -105,7 +105,22 @@ public class Interfas extends Application {
 
         c6.setCellValueFactory(d -> d.getValue().velocidadProperty());
 
-        tabla.getColumns().addAll(c1, c2, c3, c4, c5, c6);
+        TableColumn<Vuelo, String> c7 = new TableColumn<>("Tipo");
+        c7.setCellValueFactory(d -> d.getValue().tipoVueloProperty());
+
+        TableColumn<Vuelo, String> c8 = new TableColumn<>("Aerolínea");
+        c8.setCellValueFactory(d -> d.getValue().aerolineaProperty());
+
+        TableColumn<Vuelo, String> c9 = new TableColumn<>("Nivel");
+        c9.setCellValueFactory(d -> d.getValue().nivelProperty());
+
+        TableColumn<Vuelo, String> c10 = new TableColumn<>("Velocidad Cat");
+        c10.setCellValueFactory(d -> d.getValue().categoriaVelocidadProperty());
+
+        TableColumn<Vuelo, String> c11 = new TableColumn<>("Origen");
+        c11.setCellValueFactory(d -> d.getValue().origenProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11);
     }
 
     // ===================== AEROPUERTOS =====================
@@ -139,7 +154,10 @@ public class Interfas extends Application {
         TableColumn<Aeropuerto, String> c3 = new TableColumn<>("ICAO");
         c3.setCellValueFactory(d -> d.getValue().icaoProperty());
 
-        tabla.getColumns().addAll(c1, c2, c3);
+        TableColumn<Aeropuerto, String> c4 = new TableColumn<>("Tipo");
+        c4.setCellValueFactory(d -> d.getValue().tipoProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4);
     }
 
     // ===================== CLIMA =====================
@@ -173,7 +191,14 @@ public class Interfas extends Application {
         TableColumn<ClimaEstado, Number> c3 = new TableColumn<>("Humedad");
         c3.setCellValueFactory(d -> d.getValue().humedadProperty());
 
-        tabla.getColumns().addAll(c1, c2, c3);
+        TableColumn<ClimaEstado, String> c4 = new TableColumn<>("Clima");
+        c4.setCellValueFactory(d -> d.getValue().tipoClimaProperty());
+
+        TableColumn<ClimaEstado, String> c5 = new TableColumn<>("Nivel Humedad");
+        c5.setCellValueFactory(d -> d.getValue().nivelHumedadProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4,c5);
+
     }
 
     // ===================== AERONAVES =====================
@@ -207,7 +232,10 @@ public class Interfas extends Application {
         TableColumn<Aeronave, String> c3 = new TableColumn<>("Operador");
         c3.setCellValueFactory(d -> d.getValue().operadorProperty());
 
-        tabla.getColumns().addAll(c1, c2, c3);
+        TableColumn<Aeronave, String> c4 = new TableColumn<>("Tipo Operación");
+        c4.setCellValueFactory(d -> d.getValue().tipoOperacionProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4);
     }
 
     // ===================== ETL =====================
