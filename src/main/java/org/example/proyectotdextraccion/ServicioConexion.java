@@ -247,6 +247,9 @@ public class ServicioConexion {
             String origen = (v.latitudProperty().get() > 28) ? "NORTE"
                     : (v.latitudProperty().get() > 22) ? "CENTRO" : "SUR";
 
+            String fechaHora = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             return new Vuelo(
                     v.icao24Property().get(),
                     callsign,
@@ -258,7 +261,8 @@ public class ServicioConexion {
                     aerolinea,
                     nivel,
                     categoriaVel,
-                    origen
+                    origen,
+                    fechaHora
             );
 
         }).toList();
@@ -274,12 +278,16 @@ public class ServicioConexion {
             String clima = (t < 10) ? "FRIO" : (t <= 25) ? "TEMPLADO" : "CALIENTE";
             String humedad = (h < 40) ? "BAJA" : (h <= 70) ? "MEDIA" : "ALTA";
 
+            String fechaHora = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             return new ClimaEstado(
                     c.estadoProperty().get(),
                     t,
                     h,
                     clima,
-                    humedad
+                    humedad,
+                    fechaHora
             );
 
         }).toList();
@@ -296,11 +304,15 @@ public class ServicioConexion {
             else if (nombre.contains("HELIPUERTO")) tipo = "HELIPUERTO";
             else tipo = "PRIVADO";
 
+            String fechaHora = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             return new Aeropuerto(
                     nombre,
                     a.ciudadProperty().get(),
                     a.icaoProperty().get(),
-                    tipo
+                    tipo,
+                    fechaHora
             );
 
         }).toList();
@@ -313,11 +325,15 @@ public class ServicioConexion {
             String tipoOp = a.operadorProperty().get().startsWith("AMX")
                     ? "COMERCIAL" : "GENERAL";
 
+            String fechaHora = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             return new Aeronave(
                     a.icaoProperty().get(),
                     "ACTIVO",
                     a.operadorProperty().get().toUpperCase(),
-                    tipoOp
+                    tipoOp,
+                    fechaHora
             );
 
         }).toList();
@@ -326,7 +342,7 @@ public class ServicioConexion {
     public void guardarVuelosMongo(List<Vuelo> lista) {
 
         MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
-        col.drop();
+        //col.drop();
 
         for (Vuelo v : lista) {
             col.insertOne(new Document()
@@ -337,14 +353,15 @@ public class ServicioConexion {
                     .append("nivel", v.nivelProperty().get())
                     .append("velocidad", v.velocidadProperty().get())
                     .append("categoriaVelocidad", v.categoriaVelocidadProperty().get())
-                    .append("origen", v.origenProperty().get()));
+                    .append("origen", v.origenProperty().get())
+                    .append("fechaHora", v.fechaHoraProperty().get()));
         }
     }
 
     public void guardarClimaMongo(List<ClimaEstado> lista) {
 
         MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("clima");
-        col.drop();
+        //col.drop();
 
         for (ClimaEstado c : lista) {
             col.insertOne(new Document()
@@ -352,35 +369,38 @@ public class ServicioConexion {
                     .append("temperatura", c.temperaturaProperty().get())
                     .append("tipoClima", c.tipoClimaProperty().get())
                     .append("humedad", c.humedadProperty().get())
-                    .append("nivelHumedad", c.nivelHumedadProperty().get()));
+                    .append("nivelHumedad", c.nivelHumedadProperty().get())
+                    .append("fechaHora", c.fechaHoraProperty().get()));
         }
     }
 
     public void guardarAeropuertosMongo(List<Aeropuerto> lista) {
 
         MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("aeropuertos");
-        col.drop();
+        //col.drop();
 
         for (Aeropuerto a : lista) {
             col.insertOne(new Document()
                     .append("nombre", a.nombreProperty().get())
                     .append("ciudad", a.ciudadProperty().get())
                     .append("icao", a.icaoProperty().get())
-                    .append("tipo", a.tipoProperty().get()));
+                    .append("tipo", a.tipoProperty().get())
+                    .append("fechaHora", a.fechaHoraProperty().get()));
         }
     }
 
     public void guardarAeronavesMongo(List<Aeronave> lista) {
 
         MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("aeronaves");
-        col.drop();
+        //col.drop();
 
         for (Aeronave a : lista) {
             col.insertOne(new Document()
                     .append("icao", a.icaoProperty().get())
                     .append("estado", a.estadoProperty().get())
                     .append("operador", a.operadorProperty().get())
-                    .append("tipoOperacion", a.tipoOperacionProperty().get()));
+                    .append("tipoOperacion", a.tipoOperacionProperty().get())
+                    .append("fechaHora", a.fechaHoraProperty().get()));
         }
     }
 }

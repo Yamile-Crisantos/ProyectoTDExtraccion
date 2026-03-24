@@ -18,14 +18,17 @@ public class Vuelo {
     private StringProperty categoriaVelocidad;
     private StringProperty origen;
 
+    private StringProperty fechaHora;
+
     public Vuelo(String icao24, String callsign, double lon, double lat, double alt, double vel) {
-        this(icao24, callsign, lon, lat, alt, vel, "", "", "", "", "");
+        this(icao24, callsign, lon, lat, alt, vel, "", "", "", "", "", "");
     }
 
     public Vuelo(String icao24, String callsign,
                  double lon, double lat, double alt, double vel,
                  String tipoVuelo, String aerolinea,
-                 String nivel, String categoriaVelocidad, String origen) {
+                 String nivel, String categoriaVelocidad,
+                 String origen, String fechaHora) {
 
         this.icao24 = new SimpleStringProperty(icao24);
         this.callsign = new SimpleStringProperty(callsign);
@@ -40,6 +43,8 @@ public class Vuelo {
         this.nivel = new SimpleStringProperty(nivel);
         this.categoriaVelocidad = new SimpleStringProperty(categoriaVelocidad);
         this.origen = new SimpleStringProperty(origen);
+
+        this.fechaHora = new SimpleStringProperty(fechaHora);
     }
 
     public StringProperty icao24Property() { return icao24; }
@@ -54,4 +59,5 @@ public class Vuelo {
     public StringProperty nivelProperty() { return nivel; }
     public StringProperty categoriaVelocidadProperty() { return categoriaVelocidad; }
     public StringProperty origenProperty() { return origen; }
+    public StringProperty fechaHoraProperty() { return fechaHora; }
 }

@@ -120,7 +120,10 @@ public class Interfas extends Application {
         TableColumn<Vuelo, String> c11 = new TableColumn<>("Origen");
         c11.setCellValueFactory(d -> d.getValue().origenProperty());
 
-        tabla.getColumns().addAll(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11);
+        TableColumn<Vuelo, String> c12 = new TableColumn<>("Fecha");
+        c12.setCellValueFactory(d -> d.getValue().fechaHoraProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12);
     }
 
     // ===================== AEROPUERTOS =====================
@@ -157,7 +160,10 @@ public class Interfas extends Application {
         TableColumn<Aeropuerto, String> c4 = new TableColumn<>("Tipo");
         c4.setCellValueFactory(d -> d.getValue().tipoProperty());
 
-        tabla.getColumns().addAll(c1,c2,c3,c4);
+        TableColumn<Aeropuerto, String> c5 = new TableColumn<>("Fecha");
+        c5.setCellValueFactory(d -> d.getValue().fechaHoraProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4,c5);
     }
 
     // ===================== CLIMA =====================
@@ -197,7 +203,10 @@ public class Interfas extends Application {
         TableColumn<ClimaEstado, String> c5 = new TableColumn<>("Nivel Humedad");
         c5.setCellValueFactory(d -> d.getValue().nivelHumedadProperty());
 
-        tabla.getColumns().addAll(c1,c2,c3,c4,c5);
+        TableColumn<ClimaEstado, String> c6 = new TableColumn<>("Fecha");
+        c6.setCellValueFactory(d -> d.getValue().fechaHoraProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4,c5,c6);
 
     }
 
@@ -235,7 +244,10 @@ public class Interfas extends Application {
         TableColumn<Aeronave, String> c4 = new TableColumn<>("Tipo Operación");
         c4.setCellValueFactory(d -> d.getValue().tipoOperacionProperty());
 
-        tabla.getColumns().addAll(c1,c2,c3,c4);
+        TableColumn<Aeronave, String> c5 = new TableColumn<>("Fecha");
+        c5.setCellValueFactory(d -> d.getValue().fechaHoraProperty());
+
+        tabla.getColumns().addAll(c1,c2,c3,c4,c5);
     }
 
     // ===================== ETL =====================
@@ -254,7 +266,8 @@ public class Interfas extends Application {
 
                     var transformados = servicio.transformarVuelos(lista);
 
-                    servicio.guardarVuelosMongo(transformados); // 🔥 GUARDA EN MONGO
+                    servicio.guardarVuelosMongo(transformados);
+
 
                     Platform.runLater(() ->
                             tv.setItems(FXCollections.observableArrayList(transformados))

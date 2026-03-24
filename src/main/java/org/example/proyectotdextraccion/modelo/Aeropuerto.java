@@ -9,19 +9,23 @@ public class Aeropuerto {
     private StringProperty icao;
     private StringProperty tipo;
 
+    private StringProperty fechaHora;
+
     public Aeropuerto(String nombre, String ciudad, String icao) {
-        this(nombre, ciudad, icao, "");
+        this(nombre, ciudad, icao, "", "");
     }
 
-    public Aeropuerto(String nombre, String ciudad, String icao, String tipo) {
+    public Aeropuerto(String nombre, String ciudad, String icao, String tipo, String fechaHora) {
         this.nombre = new SimpleStringProperty(nombre);
         this.ciudad = new SimpleStringProperty(ciudad);
         this.icao = new SimpleStringProperty(icao);
         this.tipo = new SimpleStringProperty(tipo);
+        this.fechaHora = new SimpleStringProperty(fechaHora);
     }
 
     public StringProperty nombreProperty() { return nombre; }
     public StringProperty ciudadProperty() { return ciudad; }
     public StringProperty icaoProperty() { return icao; }
     public StringProperty tipoProperty() { return tipo; }
+    public StringProperty fechaHoraProperty() { return fechaHora; }
 }

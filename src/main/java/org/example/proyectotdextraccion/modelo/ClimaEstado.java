@@ -11,12 +11,14 @@ public class ClimaEstado {
     private StringProperty tipoClima;
     private StringProperty nivelHumedad;
 
+    private StringProperty fechaHora;
+
     public ClimaEstado(String estado, double temp, int hum) {
-        this(estado, temp, hum, "", "");
+        this(estado, temp, hum, "", "", "");
     }
 
     public ClimaEstado(String estado, double temp, int hum,
-                       String tipoClima, String nivelHumedad) {
+                       String tipoClima, String nivelHumedad, String fechaHora) {
 
         this.estado = new SimpleStringProperty(estado);
         this.temperatura = new SimpleDoubleProperty(temp);
@@ -24,6 +26,7 @@ public class ClimaEstado {
 
         this.tipoClima = new SimpleStringProperty(tipoClima);
         this.nivelHumedad = new SimpleStringProperty(nivelHumedad);
+        this.fechaHora = new SimpleStringProperty(fechaHora);
     }
 
     public StringProperty estadoProperty() { return estado; }
@@ -32,4 +35,5 @@ public class ClimaEstado {
 
     public StringProperty tipoClimaProperty() { return tipoClima; }
     public StringProperty nivelHumedadProperty() { return nivelHumedad; }
+    public StringProperty fechaHoraProperty() { return fechaHora; }
 }
