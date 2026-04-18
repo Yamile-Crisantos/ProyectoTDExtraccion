@@ -29,6 +29,7 @@ public class Interfas extends Application {
         tabs.getTabs().add(new Tab("Clima", panelClima()));
         tabs.getTabs().add(new Tab("Aeronaves", panelAeronaves()));
         tabs.getTabs().add(new Tab("ETL", panelETL()));
+        tabs.getTabs().add(new Tab("KPI", panelKPI()));
 
         stage.setScene(new Scene(tabs, 900, 600));
         stage.setTitle("Sistema ETL Aeronáutico");
@@ -338,6 +339,96 @@ public class Interfas extends Application {
 
         return new VBox(tabs);
     }
+
+    private VBox panelKPI() {
+
+        Button btnCalcular = new Button("Calcular KPI");
+
+        Label lblVel = new Label("Velocidad Promedio:");
+        Label lblAlt = new Label("Altitud Promedio:");
+        Label lblNac = new Label("% Nacionales:");
+        Label lblInt = new Label("% Internacionales:");
+        Label lblAltaVel = new Label("% Alta Velocidad:");
+        Label lblHum = new Label("Humedad Promedio:");
+        Label lblFreq = new Label("Frecuencia:");
+        Label lblDesv = new Label("Desviación Velocidad:");
+        Label lblCV = new Label("Coeficiente Variación:");
+        Label lblCong = new Label("Congestión:");
+        Label lblRel = new Label("Relación Vel/Alt:");
+        Label lblCorr = new Label("Correlación Temp-Hum:");
+        Label lblVar = new Label("Varianza Temperatura:");
+
+        btnCalcular.setOnAction(e -> {
+
+            new Thread(() -> {
+
+                double vel = servicio.kpiVelocidadPromedio();
+                double alt = servicio.kpiAltitudPromedio();
+                double nac = servicio.kpiPorcentajeNacionales();
+                double inter = servicio.kpiPorcentajeInternacionales();
+                double altaVel = servicio.kpiAltaVelocidad();
+                double hum = servicio.kpiHumedadPromedio();
+                double freq = servicio.kpiFrecuenciaActualizacion();
+                double desv = servicio.kpiDesviacionVelocidad();
+                double cv = servicio.kpiCoeficienteVariacion();
+                double cong = servicio.kpiCongestion();
+                double rel = servicio.kpiRelacionVelAlt();
+                double corr = servicio.kpiCorrelacionTempHum();
+                double var = servicio.kpiVarianzaTemperatura();
+
+                Platform.runLater(() -> {
+
+                    lblVel.setText("Velocidad Promedio: " + String.format("%.2f", vel));
+                    lblAlt.setText("Altitud Promedio: " + String.format("%.2f", alt));
+
+                    lblNac.setText("% Nacionales: " + String.format("%.2f", nac) + "%");
+                    lblInt.setText("% Internacionales: " + String.format("%.2f", inter) + "%");
+
+                    lblAltaVel.setText("% Alta Velocidad: " + String.format("%.2f", altaVel) + "%");
+
+                    lblHum.setText("Humedad Promedio: " + String.format("%.2f", hum));
+
+                    lblFreq.setText("Frecuencia: " + String.format("%.2f", freq) + " registros/seg");
+
+                    lblDesv.setText("Desviación Velocidad: " + String.format("%.2f", desv));
+
+                    lblCV.setText("Coeficiente Variación: " + String.format("%.2f", cv) + "%");
+
+                    lblCong.setText("Congestión: " + String.format("%.6f", cong));
+
+                    lblRel.setText("Relación Vel/Alt: " + String.format("%.4f", rel));
+
+                    lblCorr.setText("Correlación Temp-Hum: " + String.format("%.4f", corr));
+
+                    lblVar.setText("Varianza Temperatura: " + String.format("%.2f", var));
+
+                });
+
+            }).start();
+        });
+
+        VBox layout = new VBox(10,
+                btnCalcular,
+                lblVel,
+                lblAlt,
+                lblNac,
+                lblInt,
+                lblAltaVel,
+                lblHum,
+                lblFreq,
+                lblDesv,
+                lblCV,
+                lblCong,
+                lblRel,
+                lblCorr,
+                lblVar
+        );
+
+        layout.setPadding(new Insets(10));
+
+        return layout;
+    }
+
 
     public static void main(String[] args) {
         launch();

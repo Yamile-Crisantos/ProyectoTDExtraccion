@@ -352,6 +352,7 @@ public class ServicioConexion {
                     .append("aerolinea", v.aerolineaProperty().get())
                     .append("nivel", v.nivelProperty().get())
                     .append("velocidad", v.velocidadProperty().get())
+                    .append("altitud", v.altitudProperty().get())
                     .append("categoriaVelocidad", v.categoriaVelocidadProperty().get())
                     .append("origen", v.origenProperty().get())
                     .append("fechaHora", v.fechaHoraProperty().get()));
@@ -402,5 +403,207 @@ public class ServicioConexion {
                     .append("tipoOperacion", a.tipoOperacionProperty().get())
                     .append("fechaHora", a.fechaHoraProperty().get()));
         }
+    }
+
+    // ===================== KPI =====================
+
+    public double kpiPorcentajeNacionales() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        long total = col.countDocuments();
+        long nacionales = col.countDocuments(new Document("tipoVuelo", "NACIONAL"));
+
+        if (total == 0) return 0;
+
+        return (nacionales * 100.0) / total;
+    }
+
+// --------------------------------------------
+
+    public double kpiPorcentajeInternacionales() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        long total = col.countDocuments();
+        long internacionales = col.countDocuments(new Document("tipoVuelo", "INTERNACIONAL"));
+
+        if (total == 0) return 0;
+
+        return (internacionales * 100.0) / total;
+    }
+
+    public double kpiVelocidadPromedio() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        Document doc = col.aggregate(List.of(
+                new Document("$group",
+                        new Document("_id", null)
+                                .append("avg", new Document("$avg", "$velocidad"))
+                )
+        )).first();
+
+        if (doc == null || doc.get("avg") == null) return 0;
+
+        return ((Number) doc.get("avg")).doubleValue();
+    }
+
+    public double kpiAltitudPromedio() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        Document doc = col.aggregate(List.of(
+                new Document("$group",
+                        new Document("_id", null)
+                                .append("avg", new Document("$avg", "$altitud"))
+                )
+        )).first();
+
+        if (doc == null || doc.get("avg") == null) return 0;
+
+        return ((Number) doc.get("avg")).doubleValue();
+    }
+
+    public double kpiAltaVelocidad() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        long total = col.countDocuments();
+        long alta = col.countDocuments(new Document("categoriaVelocidad", "ALTA"));
+
+        if (total == 0) return 0;
+
+        return (alta * 100.0) / total;
+    }
+
+    public double kpiHumedadPromedio() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("clima");
+
+        Document doc = col.aggregate(List.of(
+                new Document("$group",
+                        new Document("_id", null)
+                                .append("avg", new Document("$avg", "$humedad"))
+                )
+        )).first();
+
+        if (doc == null || doc.get("avg") == null) return 0;
+
+        return ((Number) doc.get("avg")).doubleValue();
+    }
+
+    public double kpiFrecuenciaActualizacion() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        long total = col.countDocuments();
+
+        // suponiendo actualización cada 10 segundos
+        return total / 10.0;
+    }
+
+    public double kpiDesviacionVelocidad() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        Document doc = col.aggregate(List.of(
+                new Document("$group",
+                        new Document("_id", null)
+                                .append("std", new Document("$stdDevPop", "$velocidad"))
+                )
+        )).first();
+
+        if (doc == null || doc.get("std") == null) return 0;
+
+        return ((Number) doc.get("std")).doubleValue();
+    }
+
+    public double kpiCoeficienteVariacion() {
+
+        double media = kpiVelocidadPromedio();
+        double std = kpiDesviacionVelocidad();
+
+        if (media == 0) return 0;
+
+        return (std / media) * 100;
+    }
+
+    public double kpiCongestion() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("vuelos");
+
+        long total = col.countDocuments();
+
+        double area = 5000000; // área aproximada México (km²)
+
+        return total / area;
+    }
+
+    public double kpiRelacionVelAlt() {
+
+        double vel = kpiVelocidadPromedio();
+        double alt = kpiAltitudPromedio();
+
+        if (vel == 0) return 0;
+
+        return alt / vel;
+    }
+
+    public double kpiCorrelacionTempHum() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("clima");
+
+        List<Document> lista = col.find().into(new ArrayList<>());
+
+        int n = lista.size();
+        if (n == 0) return 0;
+
+        double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+
+        for (Document d : lista) {
+            double t = ((Number) d.get("temperatura")).doubleValue();
+            double h = ((Number) d.get("humedad")).doubleValue();
+
+            sumX += t;
+            sumY += h;
+            sumXY += t * h;
+            sumX2 += t * t;
+            sumY2 += h * h;
+        }
+
+        double num = (n * sumXY) - (sumX * sumY);
+        double den = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+        if (den == 0) return 0;
+
+        return num / den;
+    }
+
+    public double kpiVarianzaTemperatura() {
+
+        MongoCollection<Document> col = MongoConexion.getDatabase().getCollection("clima");
+
+        List<Document> lista = col.find().into(new ArrayList<>());
+
+        int n = lista.size();
+        if (n == 0) return 0;
+
+        double suma = 0;
+
+        for (Document d : lista) {
+            suma += ((Number) d.get("temperatura")).doubleValue();
+        }
+
+        double media = suma / n;
+
+        double sumaCuadrados = 0;
+
+        for (Document d : lista) {
+            double temp = ((Number) d.get("temperatura")).doubleValue();
+            sumaCuadrados += Math.pow(temp - media, 2);
+        }
+
+        return sumaCuadrados / n;
     }
 }
